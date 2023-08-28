@@ -56,15 +56,7 @@ $(document).ready(function(){
 
 
    
-    $(window).scroll(function(){
-        let winst = $(window).scrollTop()
-        let con2top = $("#skill").offset().top
-        if(winst>=con2top){
-            $("#skill").addClass("on")
-        }else{
-            $("#skill").removeClass("on")
-        }
-    })
+  
 
 
     $(".openR>div").on("wheel DOMMouseScroll",function(event){
@@ -94,55 +86,77 @@ $(document).ready(function(){
     
         })
 
-   
-    
-         
-    $(window).scroll(function(){
-
-        let astop = $(window).scrollTop()
-        let bstop = $("#skill").offset().top
-        let cstop = $(window).height()*1
-    
-        if(astop+cstop>=bstop){
-            if($("#skill").hasClass("on")==false){
-                //스킬클래스에 on클래스가 없다면
-                $("#skill").addClass("on")
-
-
-
-
-
-
-
+        
+        // 사각형이 그려지는 것이 초기화되는 코드
         $(".ss li svg rect").each(function(){
             let rectSVG = $(this)
             let list = $(this).parent().parent().parent()
             let pathLength = $(this).get(0).getTotalLength()
-            console.log(pathLength)
             $(this).css("stroke-dasharray",pathLength)
             $(this).css("stroke-dashoffset",pathLength)
+        })
 
-            let percent = Number($(this).parent().parent().parent().find("i").text())
+        let stateRectPer = false
 
-            let count = 0;
-            let timer = setInterval(function(){
-                count++
-                rectSVG.css("stroke-dashoffset",pathLength-(pathLength*count/100))
-                list.find("i").text(count)
+        $(window).scroll(function(){
+            let skillTop = $("#skill").offset().top
+            console.log("#skill태그가 전체문서기준 위에서 떨어진 거리 : "+skillTop)
+            let scTop = $(window).scrollTop()
+            console.log("스크롤바가 위에서 이만큼 떨어져있다 : "+scTop)
+            if(scTop >= skillTop && stateRectPer == false){
+                $(".ss li svg rect").each(function(){
+                    let rectSVG = $(this)
+                    let list = $(this).parent().parent().parent()
+                    let pathLength = $(this).get(0).getTotalLength()
+                    $(this).css("stroke-dasharray",pathLength)
+                    $(this).css("stroke-dashoffset",pathLength)
+        
+                    let percent = Number($(this).parent().parent().parent().find("i").text())
+        
+                    let count = 0;
+                    let timer = setInterval(function(){
+                        count++
+                        rectSVG.css("stroke-dashoffset",pathLength-(pathLength*count/100))
+                        list.find("i").text(count)
+        
+                        if(count >= percent){
+                            clearInterval(timer)
+                        }
+                    },30)
+                })
+                stateRectPer = true
+            }
+        })
 
-                if(count >= percent){
-                    clearInterval(timer)
-                }
-            },30)
-         })
+
+
+        // $(".ss li svg rect").each(function(){
+        //     let rectSVG = $(this)
+        //     let list = $(this).parent().parent().parent()
+        //     let pathLength = $(this).get(0).getTotalLength()
+        //     $(this).css("stroke-dasharray",pathLength)
+        //     $(this).css("stroke-dashoffset",pathLength)
+
+        //     let percent = Number($(this).parent().parent().parent().find("i").text())
+
+        //     let count = 0;
+        //     let timer = setInterval(function(){
+        //         count++
+        //         rectSVG.css("stroke-dashoffset",pathLength-(pathLength*count/100))
+        //         list.find("i").text(count)
+
+        //         if(count >= percent){
+        //             clearInterval(timer)
+        //         }
+        //     },30)
+        //  })
 
 
  
-    }
-    }
+    
 
 
-    })
+   
 
     $(".btnclosepop").click(function(){
         $(".popuptxt").hide();
